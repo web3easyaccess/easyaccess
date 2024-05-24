@@ -2,13 +2,15 @@
 import express from "express";
 
 import { getBalance } from "./blockchain/query";
+import { getPrivateKey } from "./blockchain/tools";
 
 const app = express();
 const port = 3000;
 const hostname = "0.0.0.0";
 
 app.get("/", (req, res) => {
-  res.send("Hello, TypeScript with Express!");
+  res.send("aaa:" + getPrivateKey("123456@web3easyaccess.link", "123456"));
+  // res.send("Hello, TypeScript with Express!");
 });
 
 app.get("/ea/getBalance", (req, res) => {

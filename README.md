@@ -1,79 +1,38 @@
-# 🏗 Scaffold-ETH 2
+## 说明
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+### 前端
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+- 预登录：
+  1. 选项 1：用户输入邮箱，点击“获取验证码”，调用后端接口 sendEmailCode，后端服务向用户邮箱发送验证码。然后用户从邮箱获取验证码，在验证码框输入验证码调用后端接口 checkEmailCode 进行验证.
+  2. 选项 2：调用 google 登录 api 完成登录（或更多其他网站）.
+- 预登录完成后显示密码框，让用户输入 pin 码.
+- 派生公钥与私钥
+  1. 设定既定规则，根据已有的邮箱地址与用户名 pin 码，生成私钥。
+  2. 根据私钥生成公钥（也许是多余的）
+- 根据私钥生成一次性离线签名
+- 将离线签名发送给后端
+- （当前省略）后端收取离线签名后返回给前端当前用户是否需要新建
+- （当前省略）如果需要新建，则出现充值，提示用户充值，用于 gas 费。进入充值流程....
+- 后端返回当前当前用户实际控制的合约账户地址
+- 前端进入详情主页，根据合约账户地址查询账户资产(+gas 成本)并展示。
+- 其他详情页也根据合约账户地址查询。当前详情功能应有：
+  1. 资产明细
+  2. 最近交易明细
+- 交易功能，应当具备功能：
+  1. 发起交易
+  2. SWAP(ETH 主网，则集成 uniswap)
 
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
+### 后端
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
-yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Foundry. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/foundry/foundry.toml`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/foundry/script` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn foundry:test`
-
-- Edit your smart contract `YourContract.sol` in `packages/foundry/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/foundry/script`
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+- /sendEmailCode：接收请求，然后向用户邮箱发送随机验证码
+- /checkEmailCode: 接收请求，验证验证码的正确性
+- /permitUser: 访问系统主合约，根据离线签名判断是否是新用户。新用户返回 0，老用户返回用户合约地址+gas 成本
+- /permitRegister: 访问系统主合约，根据离线签名创建用户合约。
+- 备注，创建合约及其他交易时，查询 chainlink 服务，将 gas 的 ETH 成本转换成 USDC，在系统主合约内记录用户的 gas 成本。目前，系统只记录，无需用户支付。
+- /permitTransfer: 接收前端的交易请求，访问系统主合约，代替用户发起资产转出交易（ETH+ERC20）
+- /permitTransferNFT: 接收前端的交易请求，访问系统主合约，代替用户发起 NFT 转出交易
+- /permitApprove: 接收前端的交易请求，访问系统主合约，代替用户发 ERC20 的授权
+- /permitApproveNFT: 接收前端的交易请求，访问系统主合约，代替用户发 NFT 的授权
+- /permitApproveAllNFT: 接收前端的交易请求，访问系统主合约，代替用户发全部 NFT 的授权
+- /permitMarketApprove: 接收前端的 的 market 的 allow 交易请求，访问系统主合约，代替用户向 market 发起授权交易.
+- /permitMarketSWAP: 接收前端的 SWAP 交易请求，访问系统主合约，代替用户向 market 发起交易.

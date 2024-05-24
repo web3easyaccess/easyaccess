@@ -6,26 +6,25 @@ import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 
+import "./IUserContract.sol";
+import "./UserContract.sol";
+
 contract Main is EIP712, Nonces {
     bytes32 internal constant PERMIT_TYPEHASH =
         keccak256(
-            "_permit(address eoaOnwer, uint256 nonce, uint8 v, bytes32 r, bytes32 s)"
+            "_permit(address eoa, uint256 nonce, uint8 v, bytes32 r, bytes32 s)"
         );
 
-    struct ContractInfo {
-        address eoaOwner;
-        uint256 gasUsedInUsdc;
-    }
     // eoa => contracts
     mapping(address => address) userContracts;
 
-    // constract => ContractInfo
-    mapping(address => ContractInfo) contractInfos;
-
     address admin;
+
+    address userContractTemplate;
 
     constructor() EIP712("web3easyaccess", "1.0") {
         admin = msg.sender;
+        userContractTemplate = address(new UserContract());
     }
 
     function chgAdmin(address newAdmin) external {
@@ -36,7 +35,7 @@ contract Main is EIP712, Nonces {
     error PermitFail(address);
 
     modifier _permit(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce, // same nonce can be used only once on the offchain application server
         uint8 v,
         bytes32 r,
@@ -45,98 +44,90 @@ contract Main is EIP712, Nonces {
         require(msg.sender == admin, "must be admin!");
 
         bytes32 structHash = keccak256(
-            abi.encode(PERMIT_TYPEHASH, eoaOnwer, nonce) // _useNonce(eoaOnwer))
+            abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
         );
 
         bytes32 hash = _hashTypedDataV4(structHash);
 
         address signer = ECDSA.recover(hash, v, r, s);
-        if (signer != eoaOnwer) {
-            revert PermitFail(eoaOnwer);
+        if (signer != eoa) {
+            revert PermitFail(eoa);
         }
 
         _;
     }
 
     function queryContractAddr(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external view _permit(eoaOnwer, nonce, v, r, s) returns (address) {
-        return userContracts[eoaOnwer];
+    ) external view _permit(eoa, nonce, v, r, s) returns (address) {
+        return userContracts[eoa];
     }
 
     function permitRegister(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitTransferETH(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitTransferToken(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitTransferNFT(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitApprove(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitApproveNFT(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitApproveAllNFT(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
-
-    function permitMarketApprove(
-        address eoaOnwer,
-        uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 
     function permitMarketSWAP(
-        address eoaOnwer,
+        address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoaOnwer, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {}
 }

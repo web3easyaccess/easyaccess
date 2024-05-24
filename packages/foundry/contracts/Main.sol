@@ -9,7 +9,7 @@ import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 contract Main is EIP712, Nonces {
     bytes32 internal constant PERMIT_TYPEHASH =
         keccak256(
-            "_permit(address eoaOnwer, uint8 v, bytes32 r, bytes32 s,uint256 nonce)"
+            "_permit(address eoaOnwer, uint256 nonce, uint8 v, bytes32 r, bytes32 s)"
         );
 
     struct ContractInfo {

@@ -79,7 +79,12 @@ contract Main is EIP712, Nonces {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {
+        require(userContracts[eoa] == address(0), "already registered!");
+
+        address userContract = address(new UserContract());
+        userContracts[eoa] = userContract;
+    }
 
     /**
         认证新、旧签名并转移资产合约的owner。即修改密码。
@@ -95,29 +100,61 @@ contract Main is EIP712, Nonces {
         uint8 v2,
         bytes32 r2,
         bytes32 s2
-    ) external _permit(eoa, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {
+        require(userContracts[eoa] != address(0), "not registered!");
+
+        bytes32 structHash = keccak256(
+            abi.encode(PERMIT_TYPEHASH, eoa2, nonce2) // _useNonce(eoa2))
+        );
+
+        bytes32 hash = _hashTypedDataV4(structHash);
+
+        address signer = ECDSA.recover(hash, v2, r2, s2);
+        if (signer != eoa2) {
+            revert PermitFail(eoa2);
+        }
+
+        address userContract = userContracts[eoa];
+        userContracts[eoa2] = userContract;
+        userContracts[eoa] = address(0);
+    }
 
     /**
         认证签名并转出ETH
      */
     function permitTransferETH(
+        address to,
+        uint256 amount,
         address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {
+        require(userContracts[eoa] != address(0), "not registered!");
+
+        address userContract = userContracts[eoa];
+        UserContract(userContract).transferETH(to, amount);
+    }
 
     /**
         认证签名并转出token
      */
     function permitTransferToken(
+        address token,
+        address to,
+        uint256 amount,
         address eoa,
         uint256 nonce,
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+    ) external _permit(eoa, nonce, v, r, s) {
+        require(userContracts[eoa] != address(0), "not registered!");
+
+        address userContract = userContracts[eoa];
+        UserContract(userContract).transferToken(token, to, amount);
+    }
 
     //////////////////////////// 下面的部分优先级降低
     //

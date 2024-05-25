@@ -3,10 +3,10 @@
 pragma solidity ^0.8.20;
 
 interface IUserContract {
-    function transferETH(address to) external payable;
+    function transferETH(address to, uint256 amount) external payable;
 
     // erc20
-    function transferToken(address token, address to) external;
+    function transferToken(address token, address to, uint256 amount) external;
 
     // erc721
     function TransferNFT(address token, address to) external;

@@ -8,7 +8,7 @@ import {
 
 import { publicClient, account, mainAddress, walletClient } from "./client";
 
-import { abiQueryContractAddr, abiPermitRegister } from "./abi/MainAbi";
+import { abiQueryContractAddr, abiPermitRegister } from "./abi/mainAbi";
 
 export async function getBalance(addr: string) {
   // const blockNumber = await client.getBlockNumber();

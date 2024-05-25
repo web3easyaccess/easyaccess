@@ -6,8 +6,8 @@ import { type TypedData } from "viem";
 export const domain = {
   name: "web3easyaccess",
   version: "1.0",
-  chainId: 31337,
-  verifyingContract: "0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f",
+  chainId: 11155111,
+  verifyingContract: "0xDE4D02e8018F549f0D2780d334ADa1F969FBa888",
 } as const;
 
 export const types = {

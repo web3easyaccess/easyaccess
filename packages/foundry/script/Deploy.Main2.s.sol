@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "../contracts/Main.sol";
+import "../contracts/Main2.sol";
 
 import {Script, console} from "forge-std/Script.sol";
 

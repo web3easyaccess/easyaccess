@@ -7,7 +7,7 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 
 import "./IUserContract.sol";
-import "./UserContract.sol";
+import "./UserContract2.sol";
 
 contract Main is EIP712, Nonces {
     bytes32 internal constant PERMIT_TYPEHASH =
@@ -36,7 +36,6 @@ contract Main is EIP712, Nonces {
 
     error PermitFail(address);
 
-    event MSG(address, bytes32);
     modifier _permit(
         address eoa,
         uint256 nonce, // same nonce can be used only once on the offchain application server
@@ -48,15 +47,9 @@ contract Main is EIP712, Nonces {
             abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
         );
 
-        emit MSG(eoa, structHash);
-
         bytes32 hash = _hashTypedDataV4(structHash);
 
-        emit MSG(eoa, hash);
-
         address signer = ECDSA.recover(hash, signature);
-
-        emit MSG(signer, hash);
 
         require(signer == eoa, "sign error!");
 
@@ -70,11 +63,10 @@ contract Main is EIP712, Nonces {
         address eoa,
         uint256 nonce,
         bytes calldata signature
-    ) external _permit(eoa, nonce, signature) returns (address) {
+    ) external view _permit(eoa, nonce, signature) returns (address) {
         return userContracts[eoa];
     }
 
-    event MSG2(address, uint256, bytes);
     /**
         认证签名并创建新的资产合约
      */
@@ -83,11 +75,27 @@ contract Main is EIP712, Nonces {
         uint256 nonce,
         bytes calldata signature
     ) external _permit(eoa, nonce, signature) {
-        emit MSG2(eoa, nonce, signature);
-        // require(userContracts[eoa] == address(0), "already registered!");
+        require(userContracts[eoa] == address(0), "already registered!");
 
-        address userContract = address(this); // address(new UserContract());
+        address userContract = address(new UserContract2());
         userContracts[eoa] = userContract;
+    }
+
+    /**
+        认证签名并创建新的资产合约
+     */
+    function permitQueryOrRegister(
+        address eoa,
+        uint256 nonce,
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) returns (address) {
+        if (userContracts[eoa] == address(0)) {
+            address userContract = address(new UserContract2());
+            userContracts[eoa] = userContract;
+            return userContract;
+        } else {
+            return userContracts[eoa];
+        }
     }
 
     /**
@@ -132,7 +140,7 @@ contract Main is EIP712, Nonces {
         require(userContracts[eoa] != address(0), "not registered!");
 
         address userContract = userContracts[eoa];
-        UserContract(userContract).transferETH(to, amount);
+        //  payable(UserContract2(userContract)).transferETH(to, amount);
     }
 
     /**
@@ -149,7 +157,7 @@ contract Main is EIP712, Nonces {
         require(userContracts[eoa] != address(0), "not registered!");
 
         address userContract = userContracts[eoa];
-        UserContract(userContract).transferToken(token, to, amount);
+        // UserContract2(userContract).transferToken(token, to, amount);
     }
 
     //////////////////////////// 下面的部分优先级降低

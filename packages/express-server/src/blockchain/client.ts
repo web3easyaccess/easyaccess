@@ -11,7 +11,8 @@ const currentRpcUrl = // localhost.rpcUrls.default.http[0];
 
 // local anvil提供的一个私钥
 const currentPrivateKey =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+  "0xeed8516535f76a54101329938daf4f1b0c4dca98f21172895c54ca135f1eba8f";
+// 0x707a01ca104206ffffc5220fa4cd423f49829999
 
 const publicClient = createPublicClient({
   batch: {
@@ -30,6 +31,6 @@ export const walletClient = createWalletClient({
 
 export const account = privateKeyToAccount(currentPrivateKey);
 
-const mainAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6";
+const mainAddress = "0xDE4D02e8018F549f0D2780d334ADa1F969FBa888";
 
 export { publicClient, mainAddress };

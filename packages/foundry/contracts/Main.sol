@@ -57,6 +57,9 @@ contract Main is EIP712, Nonces {
         _;
     }
 
+    /**
+        认证签名并返回资产合约。不存在则返回0
+     */
     function queryContractAddr(
         address eoa,
         uint256 nonce,
@@ -67,6 +70,9 @@ contract Main is EIP712, Nonces {
         return userContracts[eoa];
     }
 
+    /**
+        认证签名并创建新的资产合约
+     */
     function permitRegister(
         address eoa,
         uint256 nonce,
@@ -75,6 +81,25 @@ contract Main is EIP712, Nonces {
         bytes32 s
     ) external _permit(eoa, nonce, v, r, s) {}
 
+    /**
+        认证新、旧签名并转移资产合约的owner。即修改密码。
+     */
+    function permitChgOwnerPwd(
+        address eoa,
+        uint256 nonce,
+        uint8 v,
+        bytes32 r,
+        bytes32 s,
+        address eoa2, // 新密码对应的信息
+        uint256 nonce2,
+        uint8 v2,
+        bytes32 r2,
+        bytes32 s2
+    ) external _permit(eoa, nonce, v, r, s) {}
+
+    /**
+        认证签名并转出ETH
+     */
     function permitTransferETH(
         address eoa,
         uint256 nonce,
@@ -83,6 +108,9 @@ contract Main is EIP712, Nonces {
         bytes32 s
     ) external _permit(eoa, nonce, v, r, s) {}
 
+    /**
+        认证签名并转出token
+     */
     function permitTransferToken(
         address eoa,
         uint256 nonce,
@@ -91,6 +119,8 @@ contract Main is EIP712, Nonces {
         bytes32 s
     ) external _permit(eoa, nonce, v, r, s) {}
 
+    //////////////////////////// 下面的部分优先级降低
+    //
     function permitTransferNFT(
         address eoa,
         uint256 nonce,

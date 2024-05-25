@@ -8,7 +8,7 @@ import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 
 import "./IUserContract.sol";
 
-contract UserContract is IUserContract {
+abstract contract UserContract is IUserContract {
     uint256 public gasUsedInUsdc;
     address admin;
     constructor() {

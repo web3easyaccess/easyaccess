@@ -24,7 +24,7 @@ contract Main is EIP712, Nonces {
 
     constructor() EIP712("web3easyaccess", "1.0") {
         admin = msg.sender;
-        userContractTemplate = address(new UserContract());
+        // userContractTemplate = address(new UserContract());
     }
 
     function chgAdmin(address newAdmin) external {
@@ -42,17 +42,18 @@ contract Main is EIP712, Nonces {
         bytes32 s
     ) {
         require(msg.sender == admin, "must be admin!");
+        revert PermitFail(eoa);
 
-        bytes32 structHash = keccak256(
-            abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
-        );
+        // bytes32 structHash = keccak256(
+        //     abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
+        // );
 
-        bytes32 hash = _hashTypedDataV4(structHash);
+        // bytes32 hash = _hashTypedDataV4(structHash);
 
-        address signer = ECDSA.recover(hash, v, r, s);
-        if (signer != eoa) {
-            revert PermitFail(eoa);
-        }
+        // address signer = ECDSA.recover(hash, v, r, s);
+        // if (signer != eoa) {
+        //     revert PermitFail(eoa);
+        // }
 
         _;
     }
@@ -82,7 +83,7 @@ contract Main is EIP712, Nonces {
     ) external _permit(eoa, nonce, v, r, s) {
         require(userContracts[eoa] == address(0), "already registered!");
 
-        address userContract = address(new UserContract());
+        address userContract = address(this); // address(new UserContract());
         userContracts[eoa] = userContract;
     }
 

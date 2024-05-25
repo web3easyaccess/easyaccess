@@ -1,16 +1,14 @@
 export const abiQueryContractAddr = [
   {
+    inputs: [
+      { internalType: "address", name: "eoa", type: "address" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "bytes", name: "signature", type: "bytes" },
+    ],
+    stateMutability: "view",
     type: "function",
     name: "queryContractAddr",
-    inputs: [
-      { name: "eoa", type: "address", internalType: "address" },
-      { name: "nonce", type: "uint256", internalType: "uint256" },
-      { name: "v", type: "uint8", internalType: "uint8" },
-      { name: "r", type: "bytes32", internalType: "bytes32" },
-      { name: "s", type: "bytes32", internalType: "bytes32" },
-    ],
-    outputs: [{ name: "", type: "address", internalType: "address" }],
-    stateMutability: "view",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
   },
 ] as const;
 
@@ -25,5 +23,19 @@ export const abiPermitRegister = [
     ],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+] as const;
+
+export const abiPermitQueryOrRegister = [
+  {
+    inputs: [
+      { internalType: "address", name: "eoa", type: "address" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "bytes", name: "signature", type: "bytes" },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+    name: "permitQueryOrRegister",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
   },
 ] as const;

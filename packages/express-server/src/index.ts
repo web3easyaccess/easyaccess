@@ -43,37 +43,6 @@ app.get("/ea/getBalance", (req, res) => {
   res.send(`balance2=${bbb}`);
 });
 
-app.get("/permitUser", (req, res) => {
-  var eoa = req.query["eoa"];
-  var nonce = req.query["nonce"];
-  var v = req.query["v"];
-  var r = req.query["r"];
-  var s = req.query["s"];
-
-  if (typeof eoa == "string") {
-    eoa = eoa.substring(2);
-    if (typeof nonce == "string") {
-      if (typeof v == "string") {
-        if (typeof r == "string") {
-          r = r.substring(2);
-          if (typeof s == "string") {
-            s = s.substring(2);
-            permitUser(
-              `0x{eoa}`,
-              BigInt(nonce),
-              Number(v),
-              `0x{r}`,
-              `0x{s}`
-            ).then((addr) => {
-              res.send(JSON.stringify({ userContract: addr }));
-            });
-          }
-        }
-      }
-    }
-  }
-});
-
 /*
 访问系统主合约，根据离线签名创建用户合约。
 */

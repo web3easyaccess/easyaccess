@@ -8,7 +8,11 @@ import {
 
 import { publicClient, account, mainAddress, walletClient } from "./client";
 
-import { abiQueryContractAddr, abiPermitRegister } from "./abi/mainAbi";
+import {
+  abiQueryContractAddr,
+  abiPermitRegister,
+  abiPermitQueryOrRegister,
+} from "./abi/mainAbi";
 
 export async function getBalance(addr: string) {
   // const blockNumber = await client.getBlockNumber();
@@ -35,15 +39,13 @@ export async function getBalance(addr: string) {
 async function permitUser(
   eoa: `0x${string}`,
   nonce: bigint,
-  v: number,
-  r: `0x${string}`,
-  s: `0x${string}`
+  signature: `0x${string}`
 ) {
   const ca = await publicClient.readContract({
     address: mainAddress,
     abi: abiQueryContractAddr,
     functionName: "queryContractAddr",
-    args: [eoa, nonce, v, r, s],
+    args: [eoa, nonce, signature],
   });
 
   if (ca == "0x0") {
@@ -83,8 +85,8 @@ async function permitRegister(
     // );
 
     encodedData = encodeFunctionData({
-      abi: abiPermitRegister,
-      functionName: "permitRegister",
+      abi: abiPermitQueryOrRegister,
+      functionName: "permitQueryOrRegister",
       args: [eoa, nonce, signature],
     });
 
@@ -97,12 +99,14 @@ async function permitRegister(
 
     console.log(`regisiter, eoa= ${eoa}, trans:${hash}`);
 
-    const transaction = await publicClient.getTransaction({
-      hash: hash,
-    });
-    console.log("permitRegister,trans:", transaction);
+    // const transaction = await publicClient.getTransaction({
+    //   hash: hash,
+    // });
+    // console.log("permitRegister,trans:", transaction);
 
-    return hash;
+    permitUser(eoa, nonce, signature).then((x) => {
+      return x;
+    });
   } catch (e) {
     console.log("encodeAbiParameters error:", e);
     return;

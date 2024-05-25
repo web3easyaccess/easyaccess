@@ -17,7 +17,10 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/react-syntax-highlighter": "^15.5.11",
+    "@wagmi/connectors": "^5.0.6",
+    "@wagmi/core": "^2.10.4",
     "autoprefixer": "^10.4.16",
+    "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "element-theme-default": "^1.4.13",
@@ -32,6 +35,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "viem": "2.x"
   }
 }

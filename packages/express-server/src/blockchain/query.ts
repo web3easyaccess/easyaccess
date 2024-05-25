@@ -65,9 +65,7 @@ async function permitUser(
 async function permitRegister(
   eoa: `0x${string}`,
   nonce: bigint,
-  v: number,
-  r: `0x${string}`,
-  s: `0x${string}`
+  signature: `0x${string}`
 ) {
   console.log(`regisiter called ... eoa= ${eoa}`);
 
@@ -87,7 +85,7 @@ async function permitRegister(
     encodedData = encodeFunctionData({
       abi: abiPermitRegister,
       functionName: "permitRegister",
-      args: [eoa, nonce, v, r, s],
+      args: [eoa, nonce, signature],
     });
 
     const hash = await walletClient.sendTransaction({
@@ -98,6 +96,11 @@ async function permitRegister(
     });
 
     console.log(`regisiter, eoa= ${eoa}, trans:${hash}`);
+
+    const transaction = await publicClient.getTransaction({
+      hash: hash,
+    });
+    console.log("permitRegister,trans:", transaction);
 
     return hash;
   } catch (e) {

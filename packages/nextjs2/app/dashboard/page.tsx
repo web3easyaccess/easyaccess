@@ -31,11 +31,9 @@ export default async function DashboardPage() {
   if (!user) {
     return null;
   } else {
-    console.log("user", user.primaryEmailAddress?.emailAddress);
-    
     return (
       <>
-      <MaskDialog email = {user.primaryEmailAddress?.emailAddress}/>
+      <MaskDialog email = {user.primaryEmailAddress?.emailAddress}/> 
         {/* <NewButton /> */}
         {/* <Dialog>
           <DialogTrigger asChild>

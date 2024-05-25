@@ -30,6 +30,6 @@ export const walletClient = createWalletClient({
 
 export const account = privateKeyToAccount(currentPrivateKey);
 
-const mainAddress = "0x0165878a594ca255338adfa4d48449f69242eb8f";
+const mainAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6";
 
 export { publicClient, mainAddress };

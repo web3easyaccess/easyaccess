@@ -10,6 +10,8 @@ import {
 } from "./blockchain/query";
 import { getPrivateKey } from "./blockchain/tools";
 
+import "./blockchain/signAuthTypedData";
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -77,42 +79,25 @@ app.post("/permitRegister", (req, res) => {
   console.log("permitRegister,  ------- 111:");
   var eoa = req.body["eoa"];
   var nonce = req.body["nonce"];
-  var v = req.body["v"];
-  var r = req.body["r"];
-  var s = req.body["s"];
+  var signature = req.body["signature"];
   console.log("permitRegister,  ------- 112:", eoa);
   try {
     if (typeof eoa == "string") {
       eoa = eoa.substring(2);
       console.log("permitRegister,  ------- aaa1");
       if (typeof nonce == "string") {
-        if (typeof v == "string") {
-          if (typeof r == "string") {
-            r = r.substring(2);
-            if (typeof s == "string") {
-              console.log("permitRegister,  ------- aaa2");
-              s = s.substring(2);
-              permitRegister(
-                `0x${eoa}`,
-                BigInt(nonce),
-                Number(v),
-                `0x${r}`,
-                `0x${s}`
-              ).then((addr) => {
-                res.send(JSON.stringify({ userContract: addr }));
-              });
-            } else {
-              res.send("params invalid14");
+        if (typeof signature == "string") {
+          console.log("permitRegister,  ------- aaa2");
+          signature = signature.substring(2);
+          permitRegister(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
+            (addr) => {
+              res.send(JSON.stringify({ userContract: addr }));
             }
-          } else {
-            res.send("params invalid3!");
-          }
-        } else {
-          res.send("params invalid2!");
+          );
         }
-      } else {
-        res.send("params invalid1!");
       }
+    } else {
+      res.send("params invalid2!");
     }
   } catch (e) {
     console.log("permitRegister error:", e);
@@ -139,15 +124,6 @@ app.post("/permitChgOwnerPwd", (req, res) => {
           r = r.substring(2);
           if (typeof s == "string") {
             s = s.substring(2);
-            permitRegister(
-              `0x{eoa}`,
-              BigInt(nonce),
-              Number(v),
-              `0x{r}`,
-              `0x{s}`
-            ).then((addr) => {
-              res.send(JSON.stringify({ userContract: addr }));
-            });
           }
         }
       }

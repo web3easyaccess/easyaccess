@@ -5,13 +5,15 @@ import { createWalletClient, custom } from "viem";
 
 import { morphHoleskyTestnet } from "./chainMorphHoleskyTestnet";
 
-const currentNet = localhost; // sepolia;
-const currentRpcUrl = localhost.rpcUrls.default.http[0];
-// "https://eth-sepolia.g.alchemy.com/v2/UBel_pWBAqDuBkAHTtrnVvPPzAhPdfqW";
+const currentNet = sepolia; // sepolia;
+const currentRpcUrl = // localhost.rpcUrls.default.http[0];
+  "https://eth-sepolia.g.alchemy.com/v2/UBel_pWBAqDuBkAHTtrnVvPPzAhPdfqW";
 
 // local anvil提供的一个私钥
-const currentPrivateKey =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const currentPrivateKey = process.env.
+  // "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+
+
 
 const publicClient = createPublicClient({
   batch: {

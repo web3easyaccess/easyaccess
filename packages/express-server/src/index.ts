@@ -1,6 +1,7 @@
 // src/index.ts
 import express from "express";
 import bodyParser from "body-parser";
+var cors = require("cors");
 
 import {
   getBalance,
@@ -14,6 +15,7 @@ import "./blockchain/signAuthTypedData";
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors({ origin: true, credentials: true }));
 
 const port = 3000;
 const hostname = "0.0.0.0";

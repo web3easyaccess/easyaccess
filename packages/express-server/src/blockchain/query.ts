@@ -12,6 +12,7 @@ import {
   abiQueryContractAddr,
   abiPermitRegister,
   abiPermitChgOwnerPwd,
+  abiAccumulateGasInUsdc,
 } from "./abi/mainAbi";
 
 export async function getBalance(addr: string) {
@@ -98,6 +99,8 @@ async function permitRegister(
 
     console.log(`regisiter, eoa= ${eoa}, trans:${hash}`);
 
+    await accumulateGasInUsdc(eoa, BigInt(33000000000000));
+
     // const transaction = await publicClient.getTransaction({
     //   hash: hash,
     // });
@@ -149,12 +152,42 @@ async function permitChgOwnerPwd(
     //   hash: hash,
     // });
     // console.log("permitRegister,trans:", transaction);
+    await accumulateGasInUsdc(eoa, BigInt(33000000000000));
 
     permitUser(eoa, nonce, signature).then((x) => {
       return x;
     });
   } catch (e) {
     console.log("encodeAbiParameters error2:", e);
+    return;
+  }
+}
+
+/**
+ * 追加gas信息
+ * @returns
+ */
+async function accumulateGasInUsdc(eoa: `0x${string}`, gasInEth: bigint) {
+  console.log(`accumulateGasInUsdc called ... eoa= ${eoa}`);
+
+  var encodedData;
+  try {
+    encodedData = encodeFunctionData({
+      abi: abiAccumulateGasInUsdc,
+      functionName: "accumulateGasInUsdc",
+      args: [eoa, gasInEth],
+    });
+
+    const hash = await walletClient.sendTransaction({
+      account,
+      to: mainAddress,
+      value: 0n, // parseEther("0.0"),
+      data: encodedData,
+    });
+
+    console.log(`accumulateGasInUsdc, eoa= ${eoa}, trans:${hash}`);
+  } catch (e) {
+    console.log("accumulateGasInUsdc error2:", e);
     return;
   }
 }

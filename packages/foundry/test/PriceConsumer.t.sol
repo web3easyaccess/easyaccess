@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.25;
+pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
 import "../contracts/PriceConsumer.sol";
@@ -12,6 +12,6 @@ contract PriceConsumerTest is Test {
     }
 
     function testGetThePrice() public view {
-        console.logInt(priceConsumer.getThePrice());
+        console.log(priceConsumer.getThePrice());
     }
 }

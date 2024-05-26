@@ -12,7 +12,6 @@ import "./IUserContract.sol";
 contract UserContract is IUserContract {
     uint256 public gasUsedInUsdc;
     address admin;
-
     constructor() {
         admin = msg.sender;
     }
@@ -26,7 +25,11 @@ contract UserContract is IUserContract {
         gasUsedInUsdc += _gasInUsdc;
     }
 
-    function transferETH(address to, uint256 amount) external payable override {
+    function transferETH(
+        address to,
+        uint256 amount
+    ) external payable onlyAdmin {
+        require(amount <= address(this).balance, " xxx 1");
         payable(to).transfer(amount);
     }
 
@@ -34,11 +37,15 @@ contract UserContract is IUserContract {
         address token,
         address to,
         uint256 amount
-    ) external override {
+    ) external override onlyAdmin {
+        require(amount <= IERC20(token).balanceOf(address(this)), " xxx 2");
         IERC20(token).transfer(to, amount);
     }
 
-    function TransferNFT(address token, address to) external override {
+    function TransferNFT(
+        address token,
+        address to
+    ) external override onlyAdmin {
         // transfer nft
     }
 
@@ -46,7 +53,7 @@ contract UserContract is IUserContract {
         address token,
         address operator,
         uint256 amount
-    ) external override {
+    ) external override onlyAdmin {
         // approve token
     }
 
@@ -54,11 +61,16 @@ contract UserContract is IUserContract {
         address nft,
         address operator,
         uint256 nftId
-    ) external override {
+    ) external override onlyAdmin {
         // approve nft
     }
 
-    function ApproveAllNFT(address nft, address operator) external override {
+    function ApproveAllNFT(
+        address nft,
+        address operator
+    ) external override onlyAdmin {
         // approve all nft
     }
+
+    receive() external payable {}
 }

@@ -9,22 +9,25 @@ import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 import "./IUserContract.sol";
 import "./UserContract.sol";
 
+import "./PriceConsumer.sol";
+
 contract Main is EIP712, Nonces {
     bytes32 internal constant PERMIT_TYPEHASH =
-        keccak256(
-            "_permit(address eoa, uint256 nonce, uint8 v, bytes32 r, bytes32 s)"
-        );
+        keccak256("_permit(address eoa,uint256 nonce)");
 
     // eoa => contracts
     mapping(address => address) userContracts;
 
-    address admin;
+    PriceConsumer pc;
+
+    address public admin;
 
     address userContractTemplate;
 
     constructor() EIP712("web3easyaccess", "1.0") {
         admin = msg.sender;
         // userContractTemplate = address(new UserContract());
+        pc = new PriceConsumer();
     }
 
     function chgAdmin(address newAdmin) external {
@@ -32,30 +35,56 @@ contract Main is EIP712, Nonces {
         admin = newAdmin;
     }
 
-    error PermitFail(address);
+    function DOMAIN_SEPARATOR() external view virtual returns (bytes32) {
+        return _domainSeparatorV4();
+    }
 
     modifier _permit(
         address eoa,
         uint256 nonce, // same nonce can be used only once on the offchain application server
-        uint8 v,
-        bytes32 r,
-        bytes32 s
+        bytes calldata signature
     ) {
         require(msg.sender == admin, "must be admin!");
-        revert PermitFail(eoa);
 
-        // bytes32 structHash = keccak256(
-        //     abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
-        // );
+        bytes32 structHash = keccak256(
+            abi.encode(PERMIT_TYPEHASH, eoa, nonce) // _useNonce(eoa))
+        );
 
-        // bytes32 hash = _hashTypedDataV4(structHash);
+        bytes32 hash = _hashTypedDataV4(structHash);
 
-        // address signer = ECDSA.recover(hash, v, r, s);
-        // if (signer != eoa) {
-        //     revert PermitFail(eoa);
-        // }
+        address signer = ECDSA.recover(hash, signature);
+
+        require(signer == eoa, "sign error!");
 
         _;
+    }
+
+    event Log(string message);
+    event LogBytes(bytes data);
+
+    function ethPrice() private returns (uint256) {
+        uint256 lPrice = 370040512200;
+        try pc.getThePrice() returns (uint256 myPrice) {
+            return myPrice;
+        } catch Error(string memory reason) {
+            // catch failing revert() and require()
+            emit Log(reason);
+            return lPrice;
+        } catch (bytes memory reason) {
+            // catch failing assert()
+            emit LogBytes(reason);
+            return lPrice;
+        }
+    }
+
+    function accumulateGasInUsdc(address eoa, uint256 _gasInEth) external {
+        require(msg.sender == admin, "must be admin2!");
+        if (userContracts[eoa] != address(0)) {
+            address ca = userContracts[eoa];
+            UserContract(payable(ca)).accumulateGasInUsdc(
+                (_gasInEth * ethPrice()) / 1e8
+            );
+        }
     }
 
     /**
@@ -64,11 +93,18 @@ contract Main is EIP712, Nonces {
     function queryContractAddr(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external view _permit(eoa, nonce, v, r, s) returns (address) {
-        return userContracts[eoa];
+        bytes calldata signature
+    )
+        external
+        view
+        _permit(eoa, nonce, signature)
+        returns (address ca, uint256 balance, uint256 gasInUsdc)
+    {
+        ca = userContracts[eoa];
+        if (ca != address(0)) {
+            balance = ca.balance;
+            gasInUsdc = UserContract(payable(ca)).gasUsedInUsdc();
+        }
     }
 
     /**
@@ -77,14 +113,12 @@ contract Main is EIP712, Nonces {
     function permitRegister(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {
-        require(userContracts[eoa] == address(0), "already registered!");
-
-        address userContract = address(this); // address(new UserContract());
-        userContracts[eoa] = userContract;
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {
+        if (userContracts[eoa] == address(0)) {
+            address userContract = address(new UserContract());
+            userContracts[eoa] = userContract;
+        }
     }
 
     /**
@@ -93,15 +127,11 @@ contract Main is EIP712, Nonces {
     function permitChgOwnerPwd(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s,
+        bytes calldata signature,
         address eoa2, // 新密码对应的信息
         uint256 nonce2,
-        uint8 v2,
-        bytes32 r2,
-        bytes32 s2
-    ) external _permit(eoa, nonce, v, r, s) {
+        bytes calldata signature2
+    ) external _permit(eoa, nonce, signature) {
         require(userContracts[eoa] != address(0), "not registered!");
 
         bytes32 structHash = keccak256(
@@ -110,10 +140,9 @@ contract Main is EIP712, Nonces {
 
         bytes32 hash = _hashTypedDataV4(structHash);
 
-        address signer = ECDSA.recover(hash, v2, r2, s2);
-        if (signer != eoa2) {
-            revert PermitFail(eoa2);
-        }
+        address signer = ECDSA.recover(hash, signature2);
+
+        require(signer == eoa2, "sign error 22 !");
 
         address userContract = userContracts[eoa];
         userContracts[eoa2] = userContract;
@@ -128,14 +157,12 @@ contract Main is EIP712, Nonces {
         uint256 amount,
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {
+        bytes calldata signature
+    ) external payable _permit(eoa, nonce, signature) {
         require(userContracts[eoa] != address(0), "not registered!");
 
-        address userContract = userContracts[eoa];
-        UserContract(userContract).transferETH(to, amount);
+        address ca = userContracts[eoa];
+        UserContract(payable(ca)).transferETH(to, amount);
     }
 
     /**
@@ -147,14 +174,11 @@ contract Main is EIP712, Nonces {
         uint256 amount,
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {
         require(userContracts[eoa] != address(0), "not registered!");
-
-        address userContract = userContracts[eoa];
-        UserContract(userContract).transferToken(token, to, amount);
+        address ca = userContracts[eoa];
+        UserContract(payable(ca)).transferToken(token, to, amount);
     }
 
     //////////////////////////// 下面的部分优先级降低
@@ -162,40 +186,30 @@ contract Main is EIP712, Nonces {
     function permitTransferNFT(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {}
 
     function permitApprove(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {}
 
     function permitApproveNFT(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {}
 
     function permitApproveAllNFT(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {}
 
     function permitMarketSWAP(
         address eoa,
         uint256 nonce,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external _permit(eoa, nonce, v, r, s) {}
+        bytes calldata signature
+    ) external _permit(eoa, nonce, signature) {}
 }

@@ -7,7 +7,11 @@ export const abiQueryContractAddr = [
       { name: "nonce", type: "uint256", internalType: "uint256" },
       { name: "signature", type: "bytes", internalType: "bytes" },
     ],
-    outputs: [{ name: "", type: "address", internalType: "address" }],
+    outputs: [
+      { name: "ca", type: "address", internalType: "address" },
+      { name: "balance", type: "uint256", internalType: "uint256" },
+      { name: "gasInUsdc", type: "uint256", internalType: "uint256" },
+    ],
     stateMutability: "view",
   },
 ] as const;
@@ -41,3 +45,16 @@ export const abiPermitChgOwnerPwd = [
     stateMutability: "nonpayable",
   },
 ] as const;
+
+export const abiAccumulateGasInUsdc = [
+  {
+    type: "function",
+    name: "accumulateGasInUsdc",
+    inputs: [
+      { name: "eoa", type: "address", internalType: "address" },
+      { name: "_gasInEth", type: "uint256", internalType: "uint256" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+];

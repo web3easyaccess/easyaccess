@@ -1,0 +1,121 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[7].use[3]!./app/dashboard/button/AddressBook.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+/* styles/AddressBook.module.css */
+.AddressBook_container__8dNhR {
+  display: flex;
+  height: 100vh;
+  background-color: #0d1117; /* 深色背景 */
+  color: #c9d1d9; /* 浅灰色字体 */
+  font-family: Arial, sans-serif;
+}
+
+.AddressBook_sidebar__S6Az_ {
+  width: 250px;
+  background-color: #161b22; /* 侧边栏背景色 */
+  padding: 20px;
+}
+
+.AddressBook_profile__7nJXP {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.AddressBook_profilePic__XLEMc {
+  border-radius: 50%;
+  background-image: url(/_next/static/media/userp.1f3ac52f.png); /* 背景图片路径 */
+      background-size: cover; /* 背景图片填充满 */
+      background-position: center; /* 背景图片居中 */
+      background-repeat: no-repeat; /* 不重复背景图片 */
+}
+
+.AddressBook_profile__7nJXP h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff; /* 白色字体 */
+}
+
+.AddressBook_profile__7nJXP p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #8b949e; /* 浅灰色字体 */
+}
+
+.AddressBook_navList__cBKam {
+  list-style: none;
+  padding: 0;
+}
+
+.AddressBook_navList__cBKam li {
+  padding: 10px 0;
+  cursor: pointer;
+  color: #8b949e; /* 浅灰色字体 */
+}
+
+.AddressBook_navList__cBKam li.AddressBook_active__xWFOc {
+  font-weight: bold;
+  color: #ffffff; /* 白色字体 */
+}
+
+.AddressBook_mainContent__uyKeX {
+  flex: 1;
+  padding: 20px;
+  background-color: #0d1117; /* 深色背景 */
+}
+
+.AddressBook_header__VsDb9 {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.AddressBook_newTransaction__beZ1Z {
+  background-color: #238636; /* 绿色按钮背景 */
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #ffffff; /* 白色字体 */
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.AddressBook_addressBook__0bNYr {
+  margin-top: 20px;
+}
+
+.AddressBook_addressBook__0bNYr h1 {
+  margin-bottom: 20px;
+}
+
+.AddressBook_addressEntry__rt_KQ {
+  display: flex;
+  align-items: center;
+  background-color: #21262d; /* 条目背景色 */
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.AddressBook_addressEntry__rt_KQ h2 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  color: #ffffff; /* 白色字体 */
+}
+
+.AddressBook_addressEntry__rt_KQ p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #8b949e; /* 浅灰色字体 */
+}
+
+.AddressBook_sendButton__0JPg6 {
+  margin-left: auto;
+  background-color: #d73a49; /* 红色按钮背景 */
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: #ffffff; /* 白色字体 */
+  font-weight: bold;
+  border-radius: 5px;
+}

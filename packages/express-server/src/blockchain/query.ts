@@ -40,7 +40,7 @@ async function permitUser(
   signature: `0x${string}`
 ) {
   try {
-    const ca = await publicClient.readContract({
+    const info = await publicClient.readContract({
       account: account,
       address: mainAddress,
       abi: abiQueryContractAddr,
@@ -48,7 +48,13 @@ async function permitUser(
       args: [eoa, nonce, signature],
     });
 
-    return { ca: ca, gasUsedInUsd: "0.000123" };
+    /*
+      { name: "ca", type: "address", internalType: "address" },
+      { name: "balance", type: "uint256", internalType: "uint256" },
+      { name: "gasInUsdc", type: "uint256", internalType: "uint256" },
+*/
+    // info["gasInUsdc"] = "0.456";
+    return info;
   } catch (e) {
     console.log("encodeAbiParameters error:", e);
     return;
@@ -173,6 +179,7 @@ async function accumulateGasInUsdc(eoa: `0x${string}`, gasInEth: bigint) {
   console.log(`accumulateGasInUsdc called ... eoa= ${eoa}`);
 
   var encodedData;
+  return;
   try {
     encodedData = encodeFunctionData({
       abi: abiAccumulateGasInUsdc,

@@ -40,6 +40,7 @@ async function permitUser(
 ) {
   try {
     const ca = await publicClient.readContract({
+      account: account,
       address: mainAddress,
       abi: abiQueryContractAddr,
       functionName: "queryContractAddr",
@@ -57,10 +58,6 @@ async function permitUser(
  * 访问系统主合约，根据离线签名创建用户合约。
  * @param eoa
  * @param nonce
- * @param v
- * @param r
- * @param s
- * @returns
  */
 async function permitRegister(
   eoa: `0x${string}`,

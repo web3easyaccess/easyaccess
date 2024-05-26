@@ -108,7 +108,7 @@ export default function Email({ params }: { params: {
   const [oldPinList, setOldPinList] = useState<hash>();
   const [newPinList, setNewPinList] = useState<hash>();
 
-  const [addrCa, setAddrCa] = useState({ca:'',balance:''});
+  const [addrCa, setAddrCa] = useState({ca:'0x9A06adc8627CAEbFDE76c537e18FC1C1667b3b94',balance:'18'});
   
   const oldPinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     

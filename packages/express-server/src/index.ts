@@ -20,6 +20,20 @@ app.use(cors({ origin: true, credentials: true }));
 const port = 3000;
 const hostname = "0.0.0.0";
 
+function replacer(key: string, value: any): any {
+  if (typeof value === "bigint") {
+    return { __bigintval__: value.toString() };
+  }
+  return value;
+}
+
+function reviver(key: string, value: any): any {
+  if (value != null && typeof value === "object" && "__bigintval__" in value) {
+    return BigInt(value["__bigintval__"]);
+  }
+  return value;
+}
+
 app.get("/", (req, res) => {
   res.send("aaa:" + getPrivateKey("123456@web3easyaccess.link", "123456"));
   // res.send("Hello, TypeScript with Express!");
@@ -45,16 +59,7 @@ app.post("/permitUser", (req, res) => {
           permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
             (info) => {
               try {
-                console.log("infoxxxxx :", info);
-                var xxx = JSON.parse(
-                  JSON.stringify(
-                    this,
-                    (key, value) =>
-                      typeof value === "bigint" ? value.toString() : value // return everything else unchanged
-                  )
-                );
-                console.log("infoxxxxx2322:", xxx);
-                res.send(xxx);
+                res.send(JSON.stringify(info, replacer));
               } catch (e) {
                 console.log("info:", info);
                 console.log("errorxxxx:", e);

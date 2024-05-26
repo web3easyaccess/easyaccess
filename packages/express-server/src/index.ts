@@ -47,8 +47,9 @@ app.post("/permitUser", (req, res) => {
               try {
                 res.send(JSON.stringify(info));
               } catch (e) {
+                console.log("errorxxxx:", e);
                 var aaa = {
-                  ca: "0x0000000000000000000000000000000000000000",
+                  ca: "0x1000000000000000000000000000000000000001",
                   balance: "0",
                   gasInUsdc: "0",
                 };

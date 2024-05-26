@@ -91,7 +91,7 @@ async function permitRegister(
     console.log(`regisiter called22222 ... eoa= ${eoa}`);
 
     const hash = await walletClient.sendTransaction({
-      account,
+      account: account,
       to: mainAddress,
       value: 0n, // parseEther("0.0"),
       data: encodedData,
@@ -129,7 +129,7 @@ async function permitChgOwnerPwd(
   nonce2: bigint,
   signature2: `0x${string}`
 ) {
-  console.log(`permitChgOwnerPwd called ... eoa= ${eoa}, eoa2=${eoa2}`);
+  console.log(`permitChgOwnerPwd called111 ... eoa= ${eoa}, eoa2=${eoa2}`);
 
   var encodedData;
   try {
@@ -139,14 +139,16 @@ async function permitChgOwnerPwd(
       args: [eoa, nonce, signature, eoa2, nonce2, signature2],
     });
 
+    console.log(`permitChgOwnerPwd called .222.. eoa= ${eoa}, eoa2=${eoa2}`);
+
     const hash = await walletClient.sendTransaction({
-      account,
+      account: account,
       to: mainAddress,
       value: 0n, // parseEther("0.0"),
       data: encodedData,
     });
 
-    console.log(`regisiter, eoa= ${eoa}, trans:${hash}`);
+    console.log(`permitChgOwnerPwd, eoa= ${eoa}, trans:${hash}`);
 
     // const transaction = await publicClient.getTransaction({
     //   hash: hash,
@@ -179,7 +181,7 @@ async function accumulateGasInUsdc(eoa: `0x${string}`, gasInEth: bigint) {
     });
 
     const hash = await walletClient.sendTransaction({
-      account,
+      account: account,
       to: mainAddress,
       value: 0n, // parseEther("0.0"),
       data: encodedData,

@@ -1,5 +1,5 @@
 "use client"
-
+import Link from "next/link";
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,22 +19,20 @@ import { keccak256, toHex, getContract, formatEther } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import axios from 'axios';
 
-import signAuth from "./sign/signAuthTypedData"
+import signAuth from "./blockchain/signAuthTypedData"
 
 
 interface Props {
     email:string
 }
 
+// 根据客户输入的 pin码生成密钥
 function getPrivateKey(email: string, pin: string) {
     var s1 = "web3easyaccess:" + email;
     var s2 = "web3easyaccess:" + pin;
     var ss1 = keccak256(toHex(s1));
     var ss2 = keccak256(toHex(s2));
     var ss3 = ss1.substring(2) + ss2.substring(2);
-    // console.log(ss1);
-    // console.log(ss2);
-    // console.log(ss3);
     const privateKey = keccak256(`0x${ss3}`);
     const account = privateKeyToAccount(privateKey);
     console.log(account.address);
@@ -47,153 +45,156 @@ function debounce(func: Function, delay: number) {
     return function (...args: any[]) {
       clearTimeout(timerId);
       timerId = setTimeout(() => {
-        func.apply(this, args);
+        // func.apply(this, args);
       }, delay);
     };
   }
 
 // 创建 handleInputDebounced 函数，将输入值传递给 debounce 函数
 const handleInputDebounced = debounce((value: string) => {
+
     let alerts: string[] = [];
   // 校验是否包含数字
   if (!/\d/.test(value)) {
-    alerts.push("包含数字");
+    alerts.push("数字");
   }
   
   // 校验是否包含小写字母
   if (!/[a-z]/.test(value)) {
-    alerts.push("包含小写字母");
+    alerts.push("小写字母");
   }
   // 校验是否包含大写字母
   if (!/[A-Z]/.test(value)) {
-    alerts.push("包含大写字母");
+    alerts.push("大写字母");
   }
 
   // 校验输入长度是否不足6位
   if (value.length < 6) {
-    alerts.push("inp长度不能少于6位");
+    alerts.push("长度不能少于6位");
   }
 
   // 弹出不同的提示框
   if (alerts.length > 0) {
     // alert(alerts.join("\n"));
     // console.log(alerts.join(', '),"alerts" );
-    // const massage = alerts.join(', ')
-    // `inp码必须${massage}`
-
-    
+    const massage = alerts.join('、')
+    const resdas : any = `inp码必须包含${massage}`
+   
+    console.log(resdas,"resdasresdas");
   }
   }, 500);
 
- 
-
 export default  function MaskDialog({email}:Props) {
+    const [open, setOpen] = useState(false);
 
     const buttonRef = useRef(null);
     useEffect(() => {
-        // 使用 setTimeout 来延迟执行按钮点击事件
         const timer = setTimeout(() => {
           // 在DOM更新后自动触发按钮点击事件
-          if (buttonRef.current) {
-              buttonRef.current.click();
-          }
-        }, 0); // 可以根据需要调整延迟时间
-    
-        // 清除定时器以避免内存泄漏
+        //   if (buttonRef.current) {
+        //       buttonRef.current.click();
+        //   }
+        setOpen(true); // 关闭弹窗
+        }, 0);
         return () => clearTimeout(timer);
-      }, []); // 空数组表示只在组件加载完成时执行一次
+      }, []);
 
     const [inputValue, setInputValue] = useState('');
 
-  // 定义 handleInputChange 函数，处理输入框变化事件
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 更新输入框的值
     setInputValue(event.target.value);
-    
     // 在500毫秒内没有输入内容时触发警告
     handleInputDebounced(event.target.value);
       };
 
     function hangeClick(){
-        console.log(888);
-        const hashem =   getPrivateKey(email, inputValue);
-       
+
+        if (inputValue === '') {
+            alert("pin码不能为空")
+            return
+        }else {
+        const hashem =  getPrivateKey(email, inputValue); 
+        console.log(inputValue,email,"注册pin码===================inputValue")
         signAuth(hashem).then((e)=>{
-
-           console.log("resda=================>resda",e);
+        console.log("resda=================>resda",e);
+        if (e) {
+            handlePostRequest(e);
+        }
        })
-        console.log("hashem=================>hashem",hashem);
+        setOpen(false); // 关闭弹窗
+        }
+        
+           
     }
-
     // 定义状态变量来保存请求结果
-    const [responseData, setResponseData] = useState(null); // 保存响应数据
+    // const [responseData, setResponseData] = useState(null); // 保存响应数据
       // 使用 useEffect 在组件加载时发起请求
-    useEffect(() => {
-        handlePostRequest();
-  }, []); // 空数组表示只在组件加载时执行一次
+//     useEffect(() => {
+//         handlePostRequest();
+//   }, []); // 空数组表示只在组件加载时执行一次
 
    // 发起 POST 请求
-   const handlePostRequest = async () => {
+   const handlePostRequest = async (_postData : any) => {
+    console.log(_postData,"======================_postData");
+    
     try {
       // 要发送的数据
-      const postData = {
-        username: 'exampleUser',
-        password: 'examplePassword',
-      };
-      
-      // 发送 POST 请求
-      const response = await axios.post('https://api.example.com/post', postData);
-      
+    //   const postData = {
+    //     eoa:"0x1F8636f77eB7b39cFF1c102FF0050Edf02E7561e",
+    //     nonce:"1716648280000",
+    //     signature:"0x455c24b229af9db721aba6b4f51198b1cbd709231da8c11b670419f6d12ad8f8620be417fbd38c5af49ec2ffb60137046c6e914206f3443c1d00b932c1d8abc61c"
+    //   };
+    let postData = _postData
+      // 发送 POST 请求 http://43.130.234.172:3000/permitRegister
+      console.log("===============================>1111111");
+
+      const response = await axios.post('http://43.130.234.172:3000/permitRegister', postData);
+      console.log(response,"===============================>response");
       // 保存响应数据
-      setResponseData(response.data);
+    //   setResponseData(response);
     } catch (error) {
+    console.log("===============================>error");
       console.error('Error submitting data:', error);
     }
   };
-
       return (
-        <Dialog>
-        <DialogTrigger asChild style={{ visibility: 'hidden' }}>
+        <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild style={{ display: 'none' }}>
          <Button ref={buttonRef} variant="outline">Edit Profile</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>SuperCode</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Not to worry about cumbersome private keys anymore, pin code makes your login simple.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                pin 码 :
+                pin :
               </Label>
               <Input
+                // type="password"
                 id="name"
                 defaultValue=""
                 className="col-span-3"
-                value={"HH0810tt" || inputValue}
-                // value={inputValue}
+                // value={"HH0810tt" || inputValue}
+                value={inputValue}
                 onChange={handleInputChange}
                
               />
             </div>
             <DialogDescription>
-                <div>Make changes to your profile here. Click save when you're done.</div>
+                <div>Warm reminder: Losing your pin code means losing access to your account and assets permanently.</div>
             </DialogDescription>
-            {/* <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                Username
-              </Label>
-              <Input
-                id="username"
-                defaultValue="@peduarte"
-                className="col-span-3"
-              />
-            </div> */}
+         
           </div>
           <DialogFooter>
-            <Button onClick={hangeClick}>save changes</Button>
+            {/* <Button onClick={hangeClick}>save changes</Button> */}
+            <Link href={`/dashboard/list/${encodeURIComponent(email)}`} className="link">
+            <Button onClick={hangeClick}>Submit</Button>
+             </Link>{" "}
           </DialogFooter>
         </DialogContent>
       </Dialog>

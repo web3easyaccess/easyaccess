@@ -16,8 +16,8 @@ import { domain, types } from "./typedData";
 const signAuth = async (privateKey: `0x${string}`) => {
   const account = privateKeyToAccount(privateKey);
   const eoa = privateKeyToAccount(privateKey).address;
-  // const nonce = BigInt(Date.parse(new Date().toString()));
-  const nonce = BigInt(123456);
+  const nonce = BigInt(new Date().getTime());
+  // const nonce = BigInt(123456);
 
   const signature = await walletClient.signTypedData({
     account,
@@ -34,7 +34,8 @@ const signAuth = async (privateKey: `0x${string}`) => {
     "answer:------ 0x64a7dfc20e062d5f0470db9772f0dd302c30dd59591cd9c97099cc2db2c96ed413d34d91a7a98316576ca5e9f2c20f868e7475ed4f4e8d3456e13223decfd3021c"
   );
   console.log("my-signature:", signature);
-  return { signature: signature, eoa: eoa, nonce: nonce };
+  return { signature: signature, eoa: eoa, nonce: nonce.toString() };
 };
 
-signAuth("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
+// signAuth("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80");
+export default signAuth;

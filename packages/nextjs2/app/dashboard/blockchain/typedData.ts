@@ -7,7 +7,7 @@ export const domain = {
   name: "web3easyaccess",
   version: "1.0",
   chainId: 11155111,
-  verifyingContract: "0xDE4D02e8018F549f0D2780d334ADa1F969FBa888",
+  verifyingContract: "0x2CbF3FfFD865D8D5D427376fdF25f38c1666983A",
 } as const;
 
 export const types = {

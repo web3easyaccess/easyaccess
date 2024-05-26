@@ -28,7 +28,7 @@ export default function Home() {
           <div className="px-12 py-16 border-b border-[#F2F2F4]">
             <div className="bg-[#F4F4F5] px-4 py-3 rounded-full inline-flex gap-4">
               <a href="https://clerk.com/docs" target="_blank">
-                <svg
+                {/* <svg
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -48,7 +48,7 @@ export default function Home() {
                     fill="#131316"
                     fillOpacity="0.5"
                   />
-                </svg>
+                </svg> */}
               </a>
               <div aria-hidden className="w-px h-6 bg-[#C7C7C8]" />
               <a href="https://nextjs.org/" target="_blank">
@@ -123,12 +123,11 @@ export default function Home() {
 
           <div className="p-10 border-b border-[#F2F2F2]">
             <h1 className="text-5xl font-bold tracking-tight text-[#131316] relative">
-              Auth starts here
+            Google Instant Login
             </h1>
 
             <p className="text-[#5E5F6E] pt-3 pb-6 max-w-[30rem] text-[1.0625rem] relative">
-              A simple and powerful Next.js template featuring authentication
-              and user management powered by Clerk.
+            No more worries about cumbersome keys. Google quick login makes your assets appreciate quickly
             </p>
             <div className="flex gap-3 relative">
               <Link
@@ -146,45 +145,45 @@ export default function Home() {
             </div>
           </div>
           <div className="flex gap-8 w-full h-[41.25rem] scale-[1.03]">
-            <div className="space-y-8 translate-y-12">
+            {/* <div className="space-y-8 translate-y-12">
               <Image
                 alt="Device"
                 src={signUp}
                 unoptimized
                 className="flex-none rounded-xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.08),0_15px_35px_-5px_rgba(25,28,33,0.2)] ring-1 ring-gray-950/5"
               />
-            </div>
+            </div> */}
             <div className="space-y-8 -translate-y-4">
-              <Image
+              {/* <Image
                 alt="Device"
                 src={verify}
                 unoptimized
                 className="flex-none rounded-xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.08),0_15px_35px_-5px_rgba(25,28,33,0.2)] ring-1 ring-gray-950/5"
-              />
-              <Image
+              /> */}
+              {/* <Image
                 alt="Device"
                 src={userButton2}
                 unoptimized
                 className="flex-none rounded-xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.08),0_15px_35px_-5px_rgba(25,28,33,0.2)] ring-1 ring-gray-950/5"
-              />
+              /> */}
             </div>
             <div className="space-y-8 -translate-y-[22.5rem]">
-              <Image
+              {/* <Image
                 alt="Device"
                 src={signIn}
                 unoptimized
                 className="flex-none rounded-xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.08),0_15px_35px_-5px_rgba(25,28,33,0.2)] ring-1 ring-gray-950/5"
-              />
-              <Image
+              /> */}
+              {/* <Image
                 alt="Device"
                 src={screenshotDevices}
                 unoptimized
                 className="flex-none rounded-xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.08),0_15px_35px_-5px_rgba(25,28,33,0.2)] ring-1 ring-gray-950/5"
-              />
+              /> */}
             </div>
           </div>
         </div>
-        <div className="absolute left-0 right-0 bottom-0 h-[18.75rem] bg-gradient-to-t from-white" />
+        {/* <div className="absolute left-0 right-0 bottom-0 h-[18.75rem] bg-gradient-to-t from-white" /> */}
       </main>
       <LearnMore cards={CARDS} />
       <Footer />

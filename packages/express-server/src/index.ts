@@ -111,7 +111,12 @@ app.post("/permitChgOwnerPwd", (req, res) => {
   var eoa2 = req.body["eoa2"];
   var nonce2 = req.body["nonce2"];
   var signature2 = req.body["signature2"];
-  console.log("permitChgOwnerPwd,  ------- 112:", eoa);
+  console.log("permitChgOwnerPwd,  ------- 111eoa:", eoa);
+  console.log("permitChgOwnerPwd,  ------- nonce:", nonce);
+  console.log("permitChgOwnerPwd,  ------- signature:", signature);
+  console.log("permitChgOwnerPwd,  ------- eoa2:", eoa2);
+  console.log("permitChgOwnerPwd,  ------- nonce2:", nonce2);
+  console.log("permitChgOwnerPwd,  ------- signature2:", signature2);
   try {
     if (typeof eoa == "string") {
       eoa = eoa.substring(2);

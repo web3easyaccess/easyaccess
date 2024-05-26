@@ -46,15 +46,15 @@ app.post("/permitUser", (req, res) => {
             (info) => {
               try {
                 console.log("infoxxxxx :", info);
-                res.send(
-                  JSON.parse(
-                    JSON.stringify(
-                      this,
-                      (key, value) =>
-                        typeof value === "bigint" ? value.toString() : value // return everything else unchanged
-                    )
+                var xxx = JSON.parse(
+                  JSON.stringify(
+                    this,
+                    (key, value) =>
+                      typeof value === "bigint" ? value.toString() : value // return everything else unchanged
                   )
                 );
+                console.log("infoxxxxx2322:", xxx);
+                res.send(xxx);
               } catch (e) {
                 console.log("info:", info);
                 console.log("errorxxxx:", e);

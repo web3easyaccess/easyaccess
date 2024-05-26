@@ -25,24 +25,6 @@ app.get("/", (req, res) => {
   // res.send("Hello, TypeScript with Express!");
 });
 
-app.get("/ea/getBalance", (req, res) => {
-  var address = req.query["address"];
-  var bbb;
-  if (typeof address == "string") {
-    getBalance(address).then((x) => {
-      bbb = x;
-      var result = {
-        balance: bbb,
-      };
-      res.send(JSON.stringify(result));
-    });
-    return;
-  } else {
-    bbb = "0";
-  }
-  res.send(`balance2=${bbb}`);
-});
-
 /*
 访问系统主合约，根据离线签名创建用户合约。
 */
@@ -78,7 +60,7 @@ app.post("/permitRegister", (req, res) => {
 });
 
 /*
-访问系统主合约，根据离线签名创建用户合约。
+访问系统主合约，根据离线签名 修改密码
 */
 app.post("/permitChgOwnerPwd", (req, res) => {
   var eoa = req.query["eoa"];

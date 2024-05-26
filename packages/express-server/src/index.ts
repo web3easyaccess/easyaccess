@@ -44,7 +44,16 @@ app.post("/permitUser", (req, res) => {
           signature = signature.substring(2);
           permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
             (info) => {
-              res.send(JSON.stringify(info));
+              try {
+                res.send(JSON.stringify(info));
+              } catch (e) {
+                var aaa = {
+                  ca: "0x0000000000000000000000000000000000000000",
+                  balance: "0",
+                  gasInUsdc: "0",
+                };
+                res.send(JSON.stringify(aaa));
+              }
             }
           );
         }
@@ -80,9 +89,7 @@ app.post("/permitRegister", (req, res) => {
             (addr) => {
               //   query....
               permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
-                (info) => {
-                  res.send(JSON.stringify(info));
-                }
+                (info) => {}
               );
               // query   end ...
             }

@@ -13,6 +13,7 @@ contract UserContract is IUserContract {
     uint256 public gasUsedInUsdc;
     uint256 public currentNonce;
     address admin;
+
     constructor() {
         admin = msg.sender;
     }
@@ -35,7 +36,7 @@ contract UserContract is IUserContract {
         address to,
         uint256 amount
     ) external payable onlyAdmin {
-        require(amount <= address(this).balance, " xxx 1");
+        require(amount <= address(this).balance, "balance is not enough!");
         payable(to).transfer(amount);
     }
 
@@ -44,7 +45,10 @@ contract UserContract is IUserContract {
         address to,
         uint256 amount
     ) external override onlyAdmin {
-        require(amount <= IERC20(token).balanceOf(address(this)), " xxx 2");
+        require(
+            amount <= IERC20(token).balanceOf(address(this)),
+            "balance is not enough!"
+        );
         IERC20(token).transfer(to, amount);
     }
 

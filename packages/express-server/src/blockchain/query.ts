@@ -40,34 +40,24 @@ async function permitUser(
   signature: `0x${string}`
 ) {
   try {
-    // const info = await publicClient.readContract({
-    //   account: account,
-    //   address: mainAddress,
-    //   abi: abiQueryContractAddr,
-    //   functionName: "queryContractAddr",
-    //   args: [eoa, nonce, signature],
-    // });
+    const info = await publicClient.readContract({
+      account: account,
+      address: mainAddress,
+      abi: abiQueryContractAddr,
+      functionName: "queryContractAddr",
+      args: [eoa, nonce, signature],
+    });
 
-    publicClient
-      .readContract({
-        account: account,
-        address: mainAddress,
-        abi: abiQueryContractAddr,
-        functionName: "queryContractAddr",
-        args: [eoa, nonce, signature],
-      })
-      .then((s) => {
-        console.log("123fffffffffff,", s);
-        return s;
-      });
     /*
       { name: "ca", type: "address", internalType: "address" },
       { name: "balance", type: "uint256", internalType: "uint256" },
       { name: "gasInUsdc", type: "uint256", internalType: "uint256" },
 */
     // info["gasInUsdc"] = "0.456";
+    return info;
   } catch (e) {
     console.log("encodeAbiParameters error:", e);
+    return {};
   }
 }
 

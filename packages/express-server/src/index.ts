@@ -103,25 +103,53 @@ app.post("/permitRegister", (req, res) => {
 访问系统主合约，根据离线签名 修改密码
 */
 app.post("/permitChgOwnerPwd", (req, res) => {
-  var eoa = req.query["eoa"];
-  var nonce = req.query["nonce"];
-  var v = req.query["v"];
-  var r = req.query["r"];
-  var s = req.query["s"];
+  console.log("permitChgOwnerPwd,  ------- 111:");
+  var eoa = req.body["eoa"];
+  var nonce = req.body["nonce"];
+  var signature = req.body["signature"];
 
-  if (typeof eoa == "string") {
-    eoa = eoa.substring(2);
-    if (typeof nonce == "string") {
-      if (typeof v == "string") {
-        if (typeof r == "string") {
-          r = r.substring(2);
-          if (typeof s == "string") {
-            s = s.substring(2);
+  var eoa2 = req.body["eoa2"];
+  var nonce2 = req.body["nonce2"];
+  var signature2 = req.body["signature2"];
+  console.log("permitChgOwnerPwd,  ------- 112:", eoa);
+  try {
+    if (typeof eoa == "string") {
+      eoa = eoa.substring(2);
+      console.log("permitChgOwnerPwd,  ------- aaa1");
+      if (typeof nonce == "string") {
+        if (typeof signature == "string") {
+          console.log("permitChgOwnerPwd,  ------- aaa2");
+          signature = signature.substring(2);
+
+          if (typeof eoa2 == "string") {
+            eoa2 = eoa2.substring(2);
+            console.log("permitChgOwnerPwd,  ------- aaa1");
+            if (typeof nonce2 == "string") {
+              if (typeof signature2 == "string") {
+                permitChgOwnerPwd(
+                  `0x${eoa}`,
+                  BigInt(nonce),
+                  `0x${signature}`,
+                  `0x${eoa2}`,
+                  BigInt(nonce2),
+                  `0x${signature2}`
+                ).then((addr) => {
+                  //   query....
+                  // query   end ...
+                });
+              }
+            }
           }
         }
       }
+    } else {
+      res.send("params invalid2! @ out");
     }
+  } catch (e) {
+    console.log("permitChgOwnerPwd error @ out:", e);
+    res.send("params invalid0!");
   }
+  console.log("permitChgOwnerPwd @ out,  ------- 113");
 });
 
 app.listen(port, hostname, () => {

@@ -39,6 +39,10 @@ contract Main is EIP712, Nonces {
         return _domainSeparatorV4();
     }
 
+    function _checkAndSetNonce(address ca, uint256 newNonce) private {
+        UserContract(payable(ca)).checkAndSetNonce(newNonce);
+    }
+
     modifier _permit(
         address eoa,
         uint256 nonce, // same nonce can be used only once on the offchain application server
@@ -107,6 +111,8 @@ contract Main is EIP712, Nonces {
         }
     }
 
+    event CreateCa(address owner, address ca);
+    event ChgPwd(address owner, address newOnwer, address ca);
     /**
         认证签名并创建新的资产合约
      */
@@ -118,6 +124,8 @@ contract Main is EIP712, Nonces {
         if (userContracts[eoa] == address(0)) {
             address userContract = address(new UserContract());
             userContracts[eoa] = userContract;
+            _checkAndSetNonce(userContract, nonce);
+            emit CreateCa(eoa, userContract);
         }
     }
 
@@ -147,6 +155,8 @@ contract Main is EIP712, Nonces {
         address userContract = userContracts[eoa];
         userContracts[eoa2] = userContract;
         userContracts[eoa] = address(0);
+        _checkAndSetNonce(userContract, nonce);
+        emit ChgPwd(eoa, eoa2, userContract);
     }
 
     /**
@@ -162,6 +172,7 @@ contract Main is EIP712, Nonces {
         require(userContracts[eoa] != address(0), "not registered!");
 
         address ca = userContracts[eoa];
+        _checkAndSetNonce(ca, nonce);
         UserContract(payable(ca)).transferETH(to, amount);
     }
 
@@ -178,6 +189,7 @@ contract Main is EIP712, Nonces {
     ) external _permit(eoa, nonce, signature) {
         require(userContracts[eoa] != address(0), "not registered!");
         address ca = userContracts[eoa];
+        _checkAndSetNonce(ca, nonce);
         UserContract(payable(ca)).transferToken(token, to, amount);
     }
 

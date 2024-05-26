@@ -11,6 +11,7 @@ import "./IUserContract.sol";
 
 contract UserContract is IUserContract {
     uint256 public gasUsedInUsdc;
+    uint256 public currentNonce;
     address admin;
     constructor() {
         admin = msg.sender;
@@ -19,6 +20,11 @@ contract UserContract is IUserContract {
     modifier onlyAdmin() {
         require(msg.sender == admin);
         _;
+    }
+
+    function checkAndSetNonce(uint256 _nonce) external onlyAdmin {
+        require(_nonce > currentNonce, "nonce is inValid!");
+        currentNonce = _nonce;
     }
 
     function accumulateGasInUsdc(uint256 _gasInUsdc) external onlyAdmin {

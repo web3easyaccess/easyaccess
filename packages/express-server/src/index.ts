@@ -45,7 +45,7 @@ app.post("/permitUser", (req, res) => {
           permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
             (info) => {
               try {
-                console.log("infoxxxxx:", info);
+                console.log("infoxxxxx :", info);
                 res.send(
                   JSON.parse(
                     JSON.stringify(

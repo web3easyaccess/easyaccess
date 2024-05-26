@@ -39,3 +39,20 @@ export const abiPermitQueryOrRegister = [
     outputs: [{ internalType: "address", name: "", type: "address" }],
   },
 ] as const;
+
+export const abiPermitChgOwnerPwd = [
+  {
+    type: "function",
+    name: "permitChgOwnerPwd",
+    inputs: [
+      { name: "eoa", type: "address", internalType: "address" },
+      { name: "nonce", type: "uint256", internalType: "uint256" },
+      { name: "signature", type: "bytes", internalType: "bytes" },
+      { name: "eoa2", type: "address", internalType: "address" },
+      { name: "nonce2", type: "uint256", internalType: "uint256" },
+      { name: "signature2", type: "bytes", internalType: "bytes" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+] as const;

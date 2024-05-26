@@ -12,6 +12,7 @@ import {
   abiQueryContractAddr,
   abiPermitRegister,
   abiPermitQueryOrRegister,
+  abiPermitChgOwnerPwd,
 } from "./abi/mainAbi";
 
 export async function getBalance(addr: string) {
@@ -31,9 +32,6 @@ export async function getBalance(addr: string) {
  * 访问系统主合约，根据离线签名判断是否是新用户。新用户返回 0，老用户返回用户合约地址+gas 成本
  * @param eoa
  * @param nonce
- * @param v
- * @param r
- * @param s
  * @returns
  */
 async function permitUser(
@@ -70,6 +68,8 @@ async function permitRegister(
   signature: `0x${string}`
 ) {
   console.log(`regisiter called ... eoa= ${eoa}`);
+  console.log(`regisiter called ... eoa22:`, nonce);
+  console.log(`regisiter called ... eoa33:`, signature);
 
   var encodedData;
   try {
@@ -89,6 +89,8 @@ async function permitRegister(
       functionName: "permitQueryOrRegister",
       args: [eoa, nonce, signature],
     });
+
+    console.log(`regisiter called22222 ... eoa= ${eoa}`);
 
     const hash = await walletClient.sendTransaction({
       account,
@@ -117,23 +119,47 @@ async function permitRegister(
  * 访问系统主合约，验证两个离线签名并修改密码（实际是修改ca的owner）。
  * @param eoa
  * @param nonce
- * @param v
- * @param r
- * @param s
  * @returns
  */
 async function permitChgOwnerPwd(
   eoa: `0x${string}`,
   nonce: bigint,
-  v: number,
-  r: `0x${string}`,
-  s: `0x${string}`,
-
+  signature: `0x${string}`,
   eoa2: `0x${string}`,
   nonce2: bigint,
-  v2: number,
-  r2: `0x${string}`,
-  s2: `0x${string}`
-) {}
+  signature2: `0x${string}`
+) {
+  console.log(`permitChgOwnerPwd called ... eoa= ${eoa}, eoa2=${eoa2}`);
+
+  var encodedData;
+  try {
+    encodedData = encodeFunctionData({
+      abi: abiPermitChgOwnerPwd,
+      functionName: "permitChgOwnerPwd",
+      args: [eoa, nonce, signature, eoa2, nonce2, signature2],
+    });
+
+    const hash = await walletClient.sendTransaction({
+      account,
+      to: mainAddress,
+      value: 0n, // parseEther("0.0"),
+      data: encodedData,
+    });
+
+    console.log(`regisiter, eoa= ${eoa}, trans:${hash}`);
+
+    // const transaction = await publicClient.getTransaction({
+    //   hash: hash,
+    // });
+    // console.log("permitRegister,trans:", transaction);
+
+    permitUser(eoa, nonce, signature).then((x) => {
+      return x;
+    });
+  } catch (e) {
+    console.log("encodeAbiParameters error2:", e);
+    return;
+  }
+}
 
 export { permitUser, permitRegister, permitChgOwnerPwd };

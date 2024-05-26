@@ -2,7 +2,6 @@ import { keccak256, toHex, getContract, formatEther } from "viem";
 
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
-
 export function getPrivateKey(email: string, pin: string) {
   var s1 = "web3easyaccess:" + email;
   var s2 = "web3easyaccess:" + pin;
@@ -18,4 +17,4 @@ export function getPrivateKey(email: string, pin: string) {
   return privateKey;
 }
 
-getPrivateKey("123456@web3easyaccess.link", "123456");
+// getPrivateKey("123456@web3easyaccess.link", "123456");

@@ -116,3 +116,11 @@
   font-weight: bold;
   border-radius: 5px;
 }
+.addrp {
+  border-radius: 50%;
+  background-image: url('./img//userp.png'); /* 背景图片路径 */
+      background-size: cover; /* 背景图片填充满 */
+      background-position: center; /* 背景图片居中 */
+      background-repeat: no-repeat; /* 不重复背景图片 */
+
+}

@@ -101,6 +101,7 @@ export default  function MaskDialog({email}:Props) {
 
     const [inputValue, setInputValue] = useState('');
 
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
     // 在500毫秒内没有输入内容时触发警告
@@ -119,6 +120,7 @@ export default  function MaskDialog({email}:Props) {
         console.log("resda=================>resda",e);
         if (e) {
             handlePostRequest(e);
+            localStorage.setItem('hashE', JSON.stringify(e));
         }
        })
         setOpen(false); // 关闭弹窗
@@ -148,7 +150,7 @@ export default  function MaskDialog({email}:Props) {
       // 发送 POST 请求 http://43.130.234.172:3000/permitRegister
       console.log("===============================>1111111");
 
-      const response = await axios.post('http://43.130.234.172:3000/permitRegister', postData);
+      const response = await axios.post('http://43.130.234.172:3000/permitUser', postData);
       console.log(response,"===============================>response");
       // 保存响应数据
     //   setResponseData(response);
@@ -175,7 +177,7 @@ export default  function MaskDialog({email}:Props) {
                 pin :
               </Label>
               <Input
-                // type="password"
+                type="password"
                 id="name"
                 defaultValue=""
                 className="col-span-3"

@@ -52,18 +52,14 @@ export default function Email({ params }: { params: {
           <section className={styles.addressBook}>
             <h1>Address book</h1>
             <div className={styles.addressEntry}>
-              <Image
-                src="/address-icon.jpg"
-                alt="Address Icon"
-                width={30}
-                height={30}
-              />
+            
               <div>
                 <h2>Laudable Sepolia Safe</h2>
-                <p>sep:0x0FE96A6e1604b5afB46BCb807689674ae947554</p>
+                <p>{addrCa.ca}</p>
               </div>
               <button className={styles.sendButton}>Send</button>
             </div>
+          
           </section>
         );
       case 'apps':
@@ -106,11 +102,13 @@ export default function Email({ params }: { params: {
     signature: string
   }
 
-  const [open, setOpen] = useState(false);;
+  const [open, setOpen] = useState(false);
   const [oldPin, setOldPin] = useState('');
   const [newPin, setNewPin] = useState('');
   const [oldPinList, setOldPinList] = useState<hash>();
   const [newPinList, setNewPinList] = useState<hash>();
+
+  const [addrCa, setAddrCa] = useState({ca:'',balance:''});
   
   const oldPinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -169,20 +167,39 @@ export default function Email({ params }: { params: {
     // 查询接口
 
     useEffect(()=>{
-      getUserList({})
+     getUserList()
+      
     },[])
-    const getUserList = async (_postData : any) => {
+    const getUserList = async () => {
 
+      let hashE :any = localStorage.getItem('hashE');
+      console.log(JSON.parse(hashE),"===============================localStorage000000");
+      const h = JSON.parse(hashE);
       try { // permitUser
-
-        console.log(888888,"==+++++++++++++++++++++++++2");
-        const response = await axios.post('http://43.130.234.172:3000/permitUser', _postData);
-        console.log(response);
-        
+          const response = await axios.post('http://43.130.234.172:3000/permitUser', h);
+          console.log(response.data,"===============================permitUser");
+          setAddrCa(response.data);
       } catch (error) {
         console.error('Error submitting data:', error);
       }
+    
     };
+    const Register = async ()=>{
+      console.log(88888);
+      let hashE :any = localStorage.getItem('hashE');
+      console.log(JSON.parse(hashE),"===============================localStorage000000");
+      const h = JSON.parse(hashE);
+      try { // permitUser
+        await axios.post('http://43.130.234.172:3000/permitRegister', h);
+
+          getUserList()
+          // console.log(response.data.ca,"===============================permitUser");
+          // setAddrCa(response.data.ca);
+      } catch (error) {
+        console.error('Error submitting data:', error);
+      }
+      
+    }
 
   return (
     <>
@@ -190,12 +207,6 @@ export default function Email({ params }: { params: {
       <Head>
         <title>Dashboard</title>
       </Head>
-      {/* <div className="container">
-        <div onClick={setPow} className='setPow' >
-           
-        </div>
-
-      </div> */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild style={{ display: 'none' }}>
          <Button  variant="outline"></Button>
@@ -213,7 +224,7 @@ export default function Email({ params }: { params: {
               Old Pin
               </Label>
               <Input
-                // type="password"
+                type="password"
                 id="name"
                 defaultValue=""
                 className="col-span-3"
@@ -228,7 +239,7 @@ export default function Email({ params }: { params: {
               New Pin
               </Label>
               <Input
-                // type="password"
+                type="password"
                 id="name"
                 defaultValue=""
                 className="col-span-3"
@@ -268,8 +279,8 @@ export default function Email({ params }: { params: {
           />
           <div>
             <h3>s---g</h3>
-            <p>sep:0x0FE9...7554</p>
-            <p>0 ETH</p>
+            <p>{ addrCa.ca ? addrCa.ca.slice(0,8) :""}</p>
+            <p>{addrCa.balance} ETH</p>
           </div>
         </div>
         <nav>
@@ -278,8 +289,8 @@ export default function Email({ params }: { params: {
             <li className={activeTab === 'assets' ? styles.active : ''} onClick={() => setActiveTab('assets')}>Assets</li>
             <li className={activeTab === 'transactions' ? styles.active : ''} onClick={() => setActiveTab('transactions')}>Transactions</li>
             <li className={activeTab === 'addressBook' ? styles.active : ''} onClick={() => setActiveTab('addressBook')}>Address book</li>
-            <li className={activeTab === 'apps' ? styles.active : ''} onClick={() => setActiveTab('apps')}>Apps</li>
             <li className={activeTab === 'ChangePin' ? styles.active : ''} onClick={() => setActiveTab('ChangePin')}> <span onClick={setPow} >ChangePin</span> </li>
+            <li className={activeTab === 'apps' ? styles.active : ''} onClick={() => setActiveTab('apps')}><span onClick={Register} >Register</span> </li>
           </ul>
         </nav>
       </aside>

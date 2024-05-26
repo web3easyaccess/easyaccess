@@ -28,6 +28,40 @@ app.get("/", (req, res) => {
 /*
 访问系统主合约，根据离线签名创建用户合约。
 */
+app.post("/permitUser", (req, res) => {
+  console.log("permitUser,  ------- 111:");
+  var eoa = req.body["eoa"];
+  var nonce = req.body["nonce"];
+  var signature = req.body["signature"];
+  console.log("permitUser,  ------- 112:", eoa);
+  try {
+    if (typeof eoa == "string") {
+      eoa = eoa.substring(2);
+      console.log("permitUser,  ------- aaa1");
+      if (typeof nonce == "string") {
+        if (typeof signature == "string") {
+          console.log("permitUser,  ------- aaa2");
+          signature = signature.substring(2);
+          permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
+            (info) => {
+              res.send(JSON.stringify(info));
+            }
+          );
+        }
+      }
+    } else {
+      res.send("params1 invalid2! @ out");
+    }
+  } catch (e) {
+    console.log("permitUser1 error @ out:", e);
+    res.send("params1 invalid0!");
+  }
+  console.log("permitUser @ out,  ------- 113");
+});
+
+/*
+访问系统主合约，根据离线签名创建用户合约。
+*/
 app.post("/permitRegister", (req, res) => {
   console.log("permitRegister,  ------- 111:");
   var eoa = req.body["eoa"];
@@ -44,19 +78,25 @@ app.post("/permitRegister", (req, res) => {
           signature = signature.substring(2);
           permitRegister(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
             (addr) => {
-              res.send(JSON.stringify({ userContract: addr }));
+              //   query....
+              permitUser(`0x${eoa}`, BigInt(nonce), `0x${signature}`).then(
+                (info) => {
+                  res.send(JSON.stringify(info));
+                }
+              );
+              // query   end ...
             }
           );
         }
       }
     } else {
-      res.send("params invalid2!");
+      res.send("params invalid2! @ out");
     }
   } catch (e) {
-    console.log("permitRegister error:", e);
+    console.log("permitRegister error @ out:", e);
     res.send("params invalid0!");
   }
-  console.log("permitRegister,  ------- 113");
+  console.log("permitRegister @ out,  ------- 113");
 });
 
 /*

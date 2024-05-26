@@ -11,7 +11,6 @@ import { publicClient, account, mainAddress, walletClient } from "./client";
 import {
   abiQueryContractAddr,
   abiPermitRegister,
-  abiPermitQueryOrRegister,
   abiPermitChgOwnerPwd,
 } from "./abi/mainAbi";
 
@@ -29,7 +28,7 @@ export async function getBalance(addr: string) {
 }
 
 /**
- * 访问系统主合约，根据离线签名判断是否是新用户。新用户返回 0，老用户返回用户合约地址+gas 成本
+ * 访问系统主合约，根据离线签名判断是否是新用户。新用户返回 0地址，老用户返回用户合约地址+gas 成本
  * @param eoa
  * @param nonce
  * @returns
@@ -39,17 +38,18 @@ async function permitUser(
   nonce: bigint,
   signature: `0x${string}`
 ) {
-  const ca = await publicClient.readContract({
-    address: mainAddress,
-    abi: abiQueryContractAddr,
-    functionName: "queryContractAddr",
-    args: [eoa, nonce, signature],
-  });
+  try {
+    const ca = await publicClient.readContract({
+      address: mainAddress,
+      abi: abiQueryContractAddr,
+      functionName: "queryContractAddr",
+      args: [eoa, nonce, signature],
+    });
 
-  if (ca == "0x0") {
-    return "0x0";
-  } else {
-    return ca;
+    return { ca: ca, gasUsedInUsd: "0.000123" };
+  } catch (e) {
+    console.log("encodeAbiParameters error:", e);
+    return;
   }
 }
 
@@ -85,8 +85,8 @@ async function permitRegister(
     // );
 
     encodedData = encodeFunctionData({
-      abi: abiPermitQueryOrRegister,
-      functionName: "permitQueryOrRegister",
+      abi: abiPermitRegister,
+      functionName: "permitRegister",
       args: [eoa, nonce, signature],
     });
 

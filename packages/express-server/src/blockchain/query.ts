@@ -57,6 +57,7 @@ async function permitUser(
         args: [eoa, nonce, signature],
       })
       .then((s) => {
+        console.log("123fffffffffff,", s);
         return s;
       });
     /*

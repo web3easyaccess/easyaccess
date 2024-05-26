@@ -131,6 +131,7 @@ app.post("/permitChgOwnerPwd", (req, res) => {
             console.log("permitChgOwnerPwd,  ------- aaa1");
             if (typeof nonce2 == "string") {
               if (typeof signature2 == "string") {
+                signature2 = signature2.substring(2);
                 permitChgOwnerPwd(
                   `0x${eoa}`,
                   BigInt(nonce),

@@ -5,7 +5,7 @@ import { createWalletClient, custom } from "viem";
 
 const currentNet = sepolia; // sepolia;
 const currentRpcUrl = // localhost.rpcUrls.default.http[0];
-  "https://eth-sepolia.g.alchemy.com/v2/UBel_pWBAqDuBkAHTtrnVvPPzAhPdfqW";
+  "https://eth-sepolia.g.alchemy.com/v2/xxxxxx";
 
 const publicClient = createPublicClient({
   batch: {

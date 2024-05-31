@@ -7,11 +7,11 @@ import { morphHoleskyTestnet } from "./chainMorphHoleskyTestnet";
 
 const currentNet = sepolia; // sepolia;
 const currentRpcUrl = // localhost.rpcUrls.default.http[0];
-  "https://eth-sepolia.g.alchemy.com/v2/UBel_pWBAqDuBkAHTtrnVvPPzAhPdfqW";
+  "https://eth-sepolia.g.alchemy.com/v2/xxxxxx";
 
 // local anvil提供的一个私钥
 const currentPrivateKey =
-  "0xeed8516535f76a54101329938daf4f1b0c4dca98f21172895c54ca135f1eba8f";
+  "";
 // 0x707a01ca104206ffffc5220fa4cd423f49829999
 
 const publicClient = createPublicClient({
